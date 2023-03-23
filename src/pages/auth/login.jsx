@@ -1,8 +1,11 @@
-import { Box, Container, Grid, TextField, Typography, Button, Divider, Chip } from '@mui/material'
-import React, { useRef, useState, useReducer } from 'react'
+import { Box, Container, Grid, Divider, Chip } from '@mui/material'
+import React, { useState, useReducer } from 'react'
 import RegistrationPageImage from "../../images/pexels-pixabay-259249.jpg"
 import "./auth.css"
-import { Link } from 'react-router-dom'
+import SocialLogins from '../../components/SocialLogins'
+import { isInputEmpty, validateEmail } from '../../utils/validators'
+import LoginForm from '../../components/LoginForm'
+import FormDivider from '../../components/FormDivider'
 
 export default function LoginPage() {
     const [email, setEmail] = useState("")
@@ -19,18 +22,17 @@ export default function LoginPage() {
     const [loginState, dispatch] = useReducer(reducer, initialLoginInfo);
 
     function validateLoginInfo(inputState){
-        const emailRegx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         const {email, password} = inputState;
 
         let sanitizedEmail = email.trim()
         let sanitizedPassword = password.trim()
-        if (emailRegx.test(sanitizedEmail)){
+        if (validateEmail(sanitizedEmail)){
            inputState = {...inputState, email: sanitizedEmail, emailError: false, emailErrorMessage: ""}
         } else {
            inputState = {...inputState, email: sanitizedEmail, emailError: true, emailErrorMessage: "Invalid email entered"}
         }
 
-        if (password.length === 0 || password === ""){
+        if (isInputEmpty(sanitizedPassword)){
            inputState = {...inputState, password: sanitizedPassword, passwordError: true, passwordErrorMessage: "Invalid password entered"}
         } else {
            inputState = {...inputState, password: sanitizedPassword, passwordError: false, passwordErrorMessage: ""}
@@ -62,8 +64,6 @@ export default function LoginPage() {
           case 'validateLoginInfo':
           
             if (email.length === 0 || email === ""){
-                // state.emailError = true
-                // state.emailErrorMessage = "Email cannot be empty"
                 inputState = {...inputState, emailError: true, emailErrorMessage: "Email cannot be empty"}
             }
             if (password.length === 0 || password === ""){
@@ -123,69 +123,13 @@ export default function LoginPage() {
             <Grid item xs={12} sm={4} md={5} sx={{backgroundColor: "#fff", height: "100%"}}>
                <Box className="registration-form-container">
                     <Container sx={{padding: "20px"}}>
-                        <form className='registration-form' onSubmit={handleSubmit}>
-                            <Typography variant='h4'  sx={{marginBottom: "16px"}}>Login</Typography>
-                            <div className='form-control'>
-                                <TextField
-                                    error={loginState.emailError}
-                                    // id="outlined-error-helper-text"
-                                    label="Email"
-                                    name='email'
-                                    // defaultValue="Hello World"
-                                    helperText={loginState.emailErrorMessage}
-                                    fullWidth
-                                    sx={{marginBottom: "16px"}}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className='form-control'>
-                                <TextField
-                                     error={loginState.passwordError}
-                                    // id="outlined-error-helper-text"
-                                    label="Password"
-                                    name="password"
-                                    defaultValue={""}
-                                    helperText={loginState.passwordErrorMessage}
-                                    fullWidth
-                                    sx={{marginBottom: "16px"}}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div>
-                                <Button type='submit' variant='contained' disableElevation sx={{width: "100%", marginBottom: "16px"}}>Submit</Button>
-                            </div>
-                            <Typography variant='p'  sx={{marginBottom: "16px"}}>
-                                Don't have an account?
-                                <Link to={"/register"}> Register</Link>
-                            </Typography>
-                        </form>
-                        <Divider>
-                            <Chip label="OR" />
-                        </Divider>
-                        <Box sx={{width: "80%", marginTop: "24px", marginLeft: "auto", marginRight: "auto"}}>
-                            <div>
-                                <Button variant='contained' disableElevation sx={{width: "100%", marginBottom: "16px"}}>Login with google</Button>
-                            </div>
-                            <div>
-                                <Button variant='contained' disableElevation sx={{width: "100%", marginBottom: "16px"}}>Login with facebook</Button>
-                            </div>
-                        </Box>
+                        <LoginForm handleChange={handleChange} handleSubmit={handleSubmit} loginState={loginState} />
+                        <FormDivider />
+                        <SocialLogins></SocialLogins>
                     </Container>
                </Box>
             </Grid>
         </Grid>
-        {/* <Container sx={{backgroundColor: "red"}} maxWidth="lg">
-            <Grid container>
-                <Grid item xs={6} md={8} sx={{backgroundColor: "teal", height: "100%"}}>
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ex inventore tenetur laudantium dolorum impedit voluptates modi minima nam quam assumenda laborum tempore 
-                        deleniti quia, ipsa totam hic laboriosam amet. Doloremque.</p>
-                </Grid>
-                <Grid item xs={6} md={4} sx={{backgroundColor: "orange"}}>
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ex inventore tenetur laudantium dolorum impedit voluptates modi minima nam quam assumenda laborum tempore 
-                        deleniti quia, ipsa totam hic laboriosam amet. Doloremque.</p>
-                </Grid>
-            </Grid>
-        </Container> */}
     </Box>
   )
 }
