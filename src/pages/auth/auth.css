@@ -1,0 +1,64 @@
+.registration-page-img {
+    object-position: center;
+    object-fit: cover;
+    display: block;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+    background-clip: content-box;
+} 
+
+.registration-page-img-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.registration-page-img-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(19, 19, 19, 0.625);
+    z-index: 99;
+    /* padding: 30px; */
+}
+
+.company-logo-and-text{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 50%;
+    padding: 30px;
+    z-index: 100;
+    color: #fff;
+}
+
+.company-logo-and-text h1 {
+    font-size: 120px;
+}
+
+.company-logo-and-text p {
+    font-size: 18px;
+    line-height: 22px !important;
+}
+
+.registration-form-container {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    align-items: center;
+}
+
+.registration-form {
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* .form-control input {
+    margin-bottom: 16px;
+} */
