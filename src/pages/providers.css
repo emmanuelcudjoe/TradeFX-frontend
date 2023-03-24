@@ -1,0 +1,23 @@
+
+.img-overlay {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, #252525e7, #353434db 50%, #646464da, #7574749a 75%);
+}
+.jumbotron {
+    position: relative;
+}
+.jumbotron-img {
+    display: block;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+}

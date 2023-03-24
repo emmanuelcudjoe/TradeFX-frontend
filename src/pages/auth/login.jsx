@@ -6,6 +6,7 @@ import SocialLogins from '../../components/SocialLogins'
 import { isInputEmpty, validateEmail } from '../../utils/validators'
 import LoginForm from '../../components/LoginForm'
 import FormDivider from '../../components/FormDivider'
+import axios from "axios"
 
 export default function LoginPage() {
     const [email, setEmail] = useState("")
@@ -47,6 +48,11 @@ export default function LoginPage() {
         if (!userLoginState.emailError && !userLoginState.passwordError){
             console.log(userLoginState.email, userLoginState.password)
             console.log("Submiting User data")
+
+            axios.post("http://www.localhost:8080/api/v1/login", {email: userLoginState.email, password: userLoginState.password})
+            .then(res => console.log(res.data))
+            .then(err => console.log(err))
+            console.log("Submitting User info")
         } else {
             console.log("Error")
             console.log("Failed to submit User data")

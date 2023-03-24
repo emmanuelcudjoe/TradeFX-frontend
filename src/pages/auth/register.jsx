@@ -6,6 +6,7 @@ import { isInputEmpty, validateEmail } from '../../utils/validators'
 import RegistrationForm from '../../components/RegistrationForm'
 import SocialLogins from '../../components/SocialLogins'
 import FormDivider from '../../components/FormDivider'
+import axios from "axios"
 
 export default function RegistrationPage() {
     const initialRegistrationInfo = {
@@ -104,14 +105,20 @@ export default function RegistrationPage() {
             userRegistrationInfo.errorBagAndMessages.emailError ||
             userRegistrationInfo.errorBagAndMessages.passwordError 
             ){
-                console.log("Error")
-                return
-        }
+                console.log("Error");
+                return;
+        } 
 
+        let {firstName, lastName, email, password} = userRegistrationInfo
+
+        
+        axios.post("http://www.localhost:8080/api/v1/register", {firstName, lastName, email, password})
+        .then(res => console.log(res.data))
+        .then(err => console.log(err))
         console.log("Submitting User info")
     }
 
-    function reducer(state = {}, action) {
+    function reducer(state, action) {
         let inputState = {...state}
         switch (action.type) {
             case "setFirstName":
