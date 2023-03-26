@@ -1,20 +1,26 @@
 import React, { useReducer } from 'react'
 import  Modal  from '@mui/material/Modal'
 import  Box  from '@mui/material/Box'
-import  Typography  from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import  Paper  from '@mui/material/Paper'
 import MenuItem from '@mui/material/MenuItem';
 import { Button, Container } from '@mui/material'
+import { loadUserDataFromStorage } from '../utils/cacheUtils'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios'
 
-export default function ({open, setOpen}) {
+export default function ({open, setOpen, providerName}) {
+    const notify = (msg) => toast(msg);
     const initialTransactionData = {
         buyingCurrency: "",
         sellingCurrency: "",
         accountNumber: "",
         accountName: "",
         branchName: "",
-        contact: ""
+        contact: "",
+        amount: 0,
+        bank: ""
     }
 
     const [userTransactionData, dispatch] = useReducer(reducer, initialTransactionData);
@@ -34,6 +40,10 @@ export default function ({open, setOpen}) {
                 return state = {...state, branchName: action.payload}
             case "setContact":
                 return state = {...state, contact: action.payload}
+            case "setBank":
+                return state = {...state, bank: action.payload}
+            case "setAmount":
+                return state = {...state, amount: parseFloat(action.payload)}
             default:
                 return state = {...state}
         }
@@ -70,6 +80,19 @@ export default function ({open, setOpen}) {
                 console.log(inputValue)
                 console.log(userTransactionData)
                 return
+            case "bank":
+                dispatch({type: "setBank", payload: inputValue})
+                console.log(inputValue)
+                console.log(userTransactionData)
+                return
+            case "amount":
+                dispatch({type: "setAmount", payload: inputValue})
+                console.log(inputValue)
+                console.log(userTransactionData)
+                return
+            default:
+                dispatch()
+                return
         }
     }
 
@@ -94,7 +117,25 @@ export default function ({open, setOpen}) {
 
     function handleSubmit(e){
         e.preventDefault()
-        console.log(userTransactionData)
+        console.log(userTransactionData, loadUserDataFromStorage().email)
+
+        axios.post("http://www.localhost:8080/api/v1/buy-fx", 
+            {...userTransactionData, userEmail: loadUserDataFromStorage().email, providerName},
+            {
+                headers: {
+                    "Authorization": `bearer ${loadUserDataFromStorage().token}`
+                }
+            }
+        ).then(res => {
+            if (res.data){
+                notify("Request sent successfully. You will receive an SMS shortly")
+            }
+            handleClose()
+        }).catch(err => {
+            handleClose()
+
+            notify("Sorry, transaction could not be performed please try again later")
+        })
     }
   
   function handleClose(){
@@ -102,6 +143,7 @@ export default function ({open, setOpen}) {
   }
   return (
     <>
+        <ToastContainer />
         <Modal
             open={open}
             onClose={handleClose}
@@ -142,7 +184,7 @@ export default function ({open, setOpen}) {
                                 label="Selling currency"
                                 defaultValue="EUR"
                                 helperText="Please select selling currency"
-                                onBlur={handleChange}
+                                onChange={handleChange}
                                 sx={{width: "80%", marginLeft: "auto", marginRight: "100%"}}
                             >
                             {currencies.map((option) => (
@@ -159,7 +201,7 @@ export default function ({open, setOpen}) {
                                 name="bank"
                                 label="Bank"
                                 defaultValue=""
-                                onBlur={handleChange}
+                                onChange={handleChange}
                                 helperText="Please select your bank"
                                 sx={{width: "80%", marginLeft: "auto", marginRight: "100%"}}
                             >
@@ -171,16 +213,19 @@ export default function ({open, setOpen}) {
                             </TextField>
                         </div>
                         <div className='form-control' style={{width: "100%"}}>
-                            <TextField name="accountNumber" id="outlined-basic" label="Enter Account Number" variant="outlined" onBlur={handleChange} sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
+                            <TextField name="accountNumber" id="outlined-basic" label="Enter Account Number" variant="outlined" onChange={handleChange} sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
                         </div>
                         <div className='form-control' style={{width: "100%"}}>
-                            <TextField name="accountName" id="outlined-basic" label="Enter Account Name" variant="outlined" onBlur={handleChange}  sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
+                            <TextField name="amount" id="outlined-basic" label="Enter Amount" variant="outlined" onChange={handleChange} sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
                         </div>
                         <div className='form-control' style={{width: "100%"}}>
-                            <TextField name="branchName" id="outlined-basic" label="Enter Branch Name" variant="outlined" onBlur={handleChange} sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
+                            <TextField name="accountName" id="outlined-basic" label="Enter Account Name" variant="outlined" onChange={handleChange}  sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
                         </div>
                         <div className='form-control' style={{width: "100%"}}>
-                            <TextField name="contact" id="outlined-basic" label="Enter Your Contact" variant="outlined" onBlur={handleChange}  sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
+                            <TextField name="branchName" id="outlined-basic" label="Enter Branch Name" variant="outlined" onChange={handleChange} sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
+                        </div>
+                        <div className='form-control' style={{width: "100%"}}>
+                            <TextField name="contact" id="outlined-basic" label="Enter Your Contact" variant="outlined" onChange={handleChange}  sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
                         </div>
                         <div className='form-control' style={{width: "100%"}}>
                             <Button type="submit" variant='contained' sx={{width: "96%", margin: "auto"}} disableElevation>Submit</Button>

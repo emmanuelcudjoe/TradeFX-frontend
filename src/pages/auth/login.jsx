@@ -1,5 +1,6 @@
 import { Box, Container, Grid, Divider, Chip } from '@mui/material'
 import React, { useState, useReducer } from 'react'
+import { useNavigate } from 'react-router-dom'
 import RegistrationPageImage from "../../images/pexels-pixabay-259249.jpg"
 import "./auth.css"
 import SocialLogins from '../../components/SocialLogins'
@@ -7,10 +8,15 @@ import { isInputEmpty, validateEmail } from '../../utils/validators'
 import LoginForm from '../../components/LoginForm'
 import FormDivider from '../../components/FormDivider'
 import axios from "axios"
+import { saveUserDataToCache } from '../../utils/cacheUtils'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function LoginPage() {
+    const notify = (msg) => toast(msg);
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const navigate = useNavigate();
 
     const initialLoginInfo = {
         email: email,
@@ -49,13 +55,25 @@ export default function LoginPage() {
             console.log(userLoginState.email, userLoginState.password)
             console.log("Submiting User data")
 
-            axios.post("http://www.localhost:8080/api/v1/login", {email: userLoginState.email, password: userLoginState.password})
-            .then(res => console.log(res.data))
-            .then(err => console.log(err))
+            axios.post("http://www.localhost:8080/api/v1/login", 
+                {email: userLoginState.email, password: userLoginState.password})
+            .then(res => {
+                console.log(res.data)
+                if (res.data.token === "Invalid credentials passed"){
+                    throw new Error("Invalid credentials passed")
+                } else {
+                    saveUserDataToCache(res.data)
+                    navigate("/home")
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                notify(err.message)
+            })
             console.log("Submitting User info")
         } else {
             console.log("Error")
-            console.log("Failed to submit User data")
+            alert(e.message)
         }
     }
 
@@ -119,6 +137,7 @@ export default function LoginPage() {
     }
   return (
     <Box className='registration-page'>
+        <ToastContainer />
         <Grid container sx={{height: "100vh"}}>
             <Grid item xs={12} sm={8} md={7} sx={{backgroundColor: "teal", height: "100%"}}>
                 <Box className="registration-page-img-container">

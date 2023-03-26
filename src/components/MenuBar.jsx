@@ -9,6 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import Button  from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
+import { clearUserData } from '../utils/cacheUtils';
 
 export default function MenuBar({showButton = false, showProvidersButton, handleClose, handleMenu, anchorEl}) {
   const navigate = useNavigate();
@@ -69,7 +70,12 @@ export default function MenuBar({showButton = false, showProvidersButton, handle
                 onClose={handleClose}
               >
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
+                <MenuItem onClick={(e) => {
+                  handleClose(e)
+                  clearUserData() ? navigate("/") : navigate("/home")
+                }}>
+                  Logout
+                </MenuItem>
               </Menu>
             </div>
           )}

@@ -3,7 +3,7 @@ import MenuBar from '../components/MenuBar';
 import  Box  from '@mui/material/Box';
 import { getLiquidityProviders } from './PagesUtils';
 import { useParams } from 'react-router-dom';
-import { Container, List, ListItem, Paper, Typography } from '@mui/material';
+import { Alert, Container, List, ListItem, Paper, Typography } from '@mui/material';
 import Banner from "../images/jumbo.jpg"
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
@@ -25,11 +25,11 @@ export default function TradeProvider() {
     setShowProvidersButton(false)
     setProviderName(params.providerName)
     console.log(params)
-  }, [])
+  }, [params.providerName, showButton, showProvidersButton])
 
   return (
     <>
-      <TradeModal open={open} setOpen={setOpen} />
+      <TradeModal open={open} setOpen={setOpen} providerName={params.providerName} />
       <MenuBar showButton showProvidersButton={showProvidersButton} />
       <Box sx={{minHeight: "100vh", backgroundColor: "#e0dfdf69", paddingBottom: "40px"}}>
         <Box sx={{height: "300px", position: "relative"}}>
@@ -56,6 +56,7 @@ export default function TradeProvider() {
             </Container>
           </div>
         </Box>
+        <Alert variant="filled" severity="warning">Sorry, we are only able to process cedi to dollar transactions at the time</Alert>
         <Box className="info" sx={{marginTop: "40px"}}>
           <Container sx={{display: "flex", justifyContent: "space-evenly", fontSize: "25px"}}>
             <Paper sx={{padding: "20px", textAlign: "center"}} elevation={0}>

@@ -21,7 +21,7 @@ export default function Home() {
 
     useEffect(() => {
         setShowButton(true)
-    }, [])
+    }, [showButton])
   
     const handleClose = () => {
       setAnchorEl(null);

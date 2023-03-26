@@ -7,8 +7,10 @@ import RegistrationForm from '../../components/RegistrationForm'
 import SocialLogins from '../../components/SocialLogins'
 import FormDivider from '../../components/FormDivider'
 import axios from "axios"
+import { useNavigate } from 'react-router-dom'
 
 export default function RegistrationPage() {
+    const navigator = useNavigate()
     const initialRegistrationInfo = {
         firstName: "",
         lastName: "",
@@ -113,7 +115,10 @@ export default function RegistrationPage() {
 
         
         axios.post("http://www.localhost:8080/api/v1/register", {firstName, lastName, email, password})
-        .then(res => console.log(res.data))
+        .then(res => {
+            console.log(res.data)
+            navigator("/login")
+        })
         .then(err => console.log(err))
         console.log("Submitting User info")
     }
@@ -151,7 +156,7 @@ export default function RegistrationPage() {
                         <Typography variant='h1'>
                             Trade<span style={{color: "#ECC6BB"}}>FX</span>
                         </Typography>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusamus, ullam? Vel eligendi ducimus pariatur quisquam quo cum saepe quia!</p>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusamus, ullam? Vel eligendi ducimus pariatur quisquam quo cum saepe quia!Accusamus, ullam? Vel eligendi ducimus pariatur quisquam quo cum saepe quia!</p>
                     </div>
                     <img className='registration-page-img' src={RegistrationPageImage} alt='registration-page-img' />
                 </Box>

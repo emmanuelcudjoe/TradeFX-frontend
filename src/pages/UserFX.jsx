@@ -8,10 +8,28 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Box, Container, Typography } from '@mui/material';
+import axios from 'axios';
+import { loadUserDataFromStorage } from '../utils/cacheUtils';
 
 export default function UserFX() {
   const [showButton, setShowButton] = useState(false);
   const [showProvidersButton, setShowProvidersButton] = useState(true);
+  const [transactions, setTransactions] = useState([])
+
+  useEffect(() => {
+    axios.get("http://www.localhost:8080/api/v1/get-all-transactions", {
+      headers: {
+        "Authorization": `bearer ${loadUserDataFromStorage().token}`
+      }
+    })
+      .then(res => {
+        console.log(res.data)
+        setTransactions(res.data)
+      })
+      .catch(err => {
+        console.log(data)
+      })
+  }, [])
   
 
   function createData(name, calories, fat, carbs, protein) {
@@ -28,7 +46,7 @@ export default function UserFX() {
 
   useEffect(() => {
     setShowButton(false)
-  }, [])
+  }, [showButton])
 
   return (
     <>
@@ -51,21 +69,21 @@ export default function UserFX() {
                         </TableRow>
                         </TableHead>
                         <TableBody>
-                        {rows.map((row) => (
+                        {transactions.map((transaction) => (
                             <TableRow
-                            key={row.name}
+                            key={transaction.transactionId}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                             <TableCell component="th" scope="row">
-                                {row.name}
+                                {transaction.transactionId}
                             </TableCell>
-                            <TableCell align="center">{row.calories}</TableCell>
-                            <TableCell align="center">{row.fat}</TableCell>
-                            <TableCell align="center">{row.carbs}</TableCell>
-                            <TableCell align="center">{row.protein}</TableCell>
-                            <TableCell align="center">{row.protein}</TableCell>
-                            <TableCell align="center">{row.protein}</TableCell>
-                            <TableCell align="center">{row.protein}</TableCell>
+                            <TableCell align="center">{transaction.provider}</TableCell>
+                            <TableCell align="center">{""}</TableCell>
+                            <TableCell align="center">{""}</TableCell>
+                            <TableCell align="center">10.3</TableCell>
+                            <TableCell align="center">{transaction.bankName}</TableCell>
+                            <TableCell align="center"><em>{transaction.transactionStatus}</em></TableCell>
+                            <TableCell align="center">{transaction.date}</TableCell>
                             </TableRow>
                         ))}
                         </TableBody>

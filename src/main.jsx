@@ -13,7 +13,7 @@ import TradeProvider from './pages/Trade'
 const router = createBrowserRouter([
   {
     path: "/",
-    Component: LoginPage
+    Component: LoginPage,
   },
   {
     path: "/login",
