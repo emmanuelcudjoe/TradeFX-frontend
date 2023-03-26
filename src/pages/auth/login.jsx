@@ -60,7 +60,7 @@ export default function LoginPage() {
     }
 
 
-    function reducer(state = {}, action) {
+    function reducer(state, action) {
         let inputState = {...state}
         switch (action.type) {
             case "setPassword":

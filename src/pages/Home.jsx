@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box';
 import MenuBar from '../components/MenuBar';
 import JumotronImage from "../images/jumbo.jpg"
@@ -12,11 +12,16 @@ import SupportedBanks from '../components/SupportedBanks';
 
 export default function Home() {
     const navigate = useNavigate();
-
+    const [showButton, setShowButton] = useState(true)
     const [anchorEl, setAnchorEl] = React.useState();
+    const [showProvidersButton, setShowProvidersButton] = useState(true)
     const handleMenu = (event) => {
       setAnchorEl(event.currentTarget);
     };
+
+    useEffect(() => {
+        setShowButton(true)
+    }, [])
   
     const handleClose = () => {
       setAnchorEl(null);
@@ -24,7 +29,7 @@ export default function Home() {
     return (
         <>
             <Box sx={{ flexGrow: 1 }}>
-                <MenuBar handleClose={handleClose} handleMenu={handleMenu} anchorEl={anchorEl} />
+                <MenuBar showButton={showButton} showProvidersButton={showProvidersButton} handleClose={handleClose} handleMenu={handleMenu} anchorEl={anchorEl} />
             </Box>
             <Box className="jumbotron" sx={{height: "600px", width: "100%"}}>
                 <img className="jumbotron-img" src={JumotronImage} alt={"jumbotron-img"} />

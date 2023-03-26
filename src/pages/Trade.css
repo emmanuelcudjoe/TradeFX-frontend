@@ -1,0 +1,25 @@
+.provider-banner {
+    height: 90px;
+    width: 90px;
+    display: inline-block;
+    border-radius: 50px;
+    margin-bottom: 20px;
+}
+
+.trade-banner {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    position: relative;
+}
+
+.trade-banner-overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.7);
+}

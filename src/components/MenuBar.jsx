@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -10,8 +10,10 @@ import Menu from '@mui/material/Menu';
 import Button  from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 
-export default function MenuBar({handleClose, handleMenu, anchorEl}) {
+export default function MenuBar({showButton = false, showProvidersButton, handleClose, handleMenu, anchorEl}) {
   const navigate = useNavigate();
+  const [showProviderButton, setShowProviderButton] = useState(true)
+
 
   return (
     <>
@@ -26,18 +28,21 @@ export default function MenuBar({handleClose, handleMenu, anchorEl}) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            TradeFX
-          </Typography>
+          {/* <Button variant='contained' onClick={() => navigate("/home")}> */}
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              <Button variant='contained' onClick={() => navigate("/home")} disableElevation> 
+                TradeFX
+              </Button>
+            </Typography>
+          {/* </Button> */}
           {(
             <div>
-                <div className="g-signin2" data-onsuccess="onSignIn">GOOGLE</div>
-                <Button variant='outlined' color='inherit' sx={{marginRight: "20px"}} disableElevation>
+                {(showButton ? true: false) && (<Button variant='outlined' color='inherit' sx={{marginRight: "20px"}} disableElevation onClick={() => navigate("/my-fx-account")}>
                     My FX Account
-                </Button>
-                <Button variant='outlined' color='inherit' disableElevation onClick={() => navigate("/providers")}>
+                </Button>)}
+                {showProvidersButton && <Button variant='outlined' color='inherit' disableElevation onClick={() => navigate("/providers")}>
                     Available Providers
-                </Button>
+                </Button>}
               <IconButton
                 size="large"
                 aria-label="account of current user"

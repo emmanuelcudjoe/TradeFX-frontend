@@ -7,6 +7,8 @@ import LoginPage from './pages/auth/login'
 import RegistrationPage from './pages/auth/register'
 import Home from './pages/Home'
 import Providers from './pages/Providers'
+import UserFX from './pages/UserFX'
+import TradeProvider from './pages/Trade'
 
 const router = createBrowserRouter([
   {
@@ -27,7 +29,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/providers",
-    Component: Providers
+    Component: Providers,
+  },
+  {
+    path: "/provider/:providerName",
+    Component: TradeProvider,
+  },
+  {
+    path: "/my-fx-account",
+    Component: UserFX
   }
 ])
 
