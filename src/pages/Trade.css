@@ -23,3 +23,23 @@
     left: 0;
     background: rgba(0, 0, 0, 0.7);
 }
+
+/* width */
+::-webkit-scrollbar {
+    width: 3px;
+  }
+  
+  /* Track */
+  .currency-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  /* Handle */
+  .currency-list::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+  
+  /* Handle on hover */
+  .currency-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }

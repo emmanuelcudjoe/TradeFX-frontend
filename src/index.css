@@ -18,6 +18,10 @@ main {
   min-height: 100% !important;
 }
 
+.MuiFormLabel-asterisk, .MuiInputLabel-asterisk, .css-wgai2y-MuiFormLabel-asterisk {
+  color: red !important;
+}
+
 /* 
 @media (prefers-color-scheme: light) {
   :root {

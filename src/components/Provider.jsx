@@ -11,7 +11,7 @@ export default function Provider({name, image, status}) {
     const navigate = useNavigate();
 
     return (
-      <Card sx={{ display: 'flex', flexDirection: 'row-reverse', width: "30%", marginBottom: "40px", backgroundColor: "#e4e2e29a", padding: "5px"}}>
+      <Card elevation={0} sx={{ display: 'flex', flexDirection: 'row-reverse', width: "30%", marginBottom: "40px", backgroundColor: "rgba(0,0,0,.04)", padding: "5px"}}>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <CardContent sx={{ flex: '1 0 auto' }}>
             <Typography component="div" variant="h5">

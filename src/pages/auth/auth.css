@@ -21,7 +21,7 @@
     right: 0;
     height: 100%;
     width: 100%;
-    background-color: rgba(19, 19, 19, 0.625);
+    background-color: rgba(19, 19, 19, 0.725);
     z-index: 99;
     /* padding: 30px; */
 }
@@ -33,7 +33,7 @@
     right: 0;
     height: 60%;
     width: 60%;
-    padding: 30px;
+    padding: 70px;
     z-index: 100;
     color: #fff;
 }
@@ -44,7 +44,8 @@
 
 .company-logo-and-text p {
     font-size: 18px;
-    line-height: 22px !important;
+    line-height: 1.5;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .registration-form-container {

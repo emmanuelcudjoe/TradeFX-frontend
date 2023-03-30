@@ -18,7 +18,7 @@ export default function MenuBar({showButton = false, showProvidersButton, handle
 
   return (
     <>
-        <AppBar position="static" elevation={0} >
+      <AppBar position="static" elevation={0} >
         <Toolbar>
           <IconButton
             size="large"

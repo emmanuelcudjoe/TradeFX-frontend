@@ -1,8 +1,8 @@
 import React from 'react'
-import { TextField, Typography, Button } from '@mui/material'
+import { TextField, Typography, Button, CircularProgress } from '@mui/material'
 import { Link } from 'react-router-dom'
 
-export default function ({handleSubmit, handleChange, loginState}) {
+export default function ({handleSubmit, handleChange, loginState, isLoggedIn, loader}) {
   return (
     <>
         <form className='registration-form' onSubmit={handleSubmit}>
@@ -18,6 +18,7 @@ export default function ({handleSubmit, handleChange, loginState}) {
                     fullWidth
                     sx={{marginBottom: "16px"}}
                     onChange={handleChange}
+                    required
                 />
             </div>
             <div className='form-control'>
@@ -26,15 +27,21 @@ export default function ({handleSubmit, handleChange, loginState}) {
                     // id="outlined-error-helper-text"
                     label="Password"
                     name="password"
+                    type='password'
                     defaultValue={""}
                     helperText={loginState.passwordErrorMessage}
                     fullWidth
                     sx={{marginBottom: "16px"}}
                     onChange={handleChange}
+                    required
                 />
             </div>
             <div>
-                <Button type='submit' variant='contained' disableElevation sx={{width: "100%", marginBottom: "16px"}}>Submit</Button>
+                <Button type='submit' variant='contained' 
+                    disableElevation sx={{width: "100%", marginBottom: "16px", display: "flex", justifyItems: "center"}}>
+                    <span style={{justifySelf: "center", display: "inline-block"}}>Submit</span>
+                    {!isLoggedIn && loader && <CircularProgress sx={{justifySelf: "flex-end", display: "inline-block", color: "white"}} size={30}/>}
+                </Button>
             </div>
             <Typography variant='p'  sx={{marginBottom: "16px"}}>
                 Don't have an account?

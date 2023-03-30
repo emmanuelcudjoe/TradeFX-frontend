@@ -9,6 +9,7 @@ import Home from './pages/Home'
 import Providers from './pages/Providers'
 import UserFX from './pages/UserFX'
 import TradeProvider from './pages/Trade'
+import { loader as homeLoader } from './pages/Home' 
 
 const router = createBrowserRouter([
   {

@@ -96,7 +96,7 @@ export default function ({open, setOpen, providerName}) {
         }
     }
 
-    const currencies = [
+    const buyingCurrencies = [
         {
           value: 'USD',
           label: '$',
@@ -113,6 +113,20 @@ export default function ({open, setOpen, providerName}) {
           value: 'JPY',
           label: '¥',
         },
+        {
+          value: 'GHS',
+          label: '₵',
+        },
+      ];
+    const sellingCurrencies = [
+        {
+          value: 'EUR',
+          label: '€',
+        },
+        {
+          value: 'GHS',
+          label: '₵',
+        },
       ];
 
     function handleSubmit(e){
@@ -127,14 +141,36 @@ export default function ({open, setOpen, providerName}) {
                 }
             }
         ).then(res => {
-            if (res.data){
-                notify("Request sent successfully. You will receive an SMS shortly")
+            if (res.data && res.data.status >= 200 && res.data.status < 400){
+                handleClose()
+                // notify("Request sent successfully. You will receive an SMS shortly")
+                toast.success("Request sent successfully. You will receive an SMS shortly", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    });
+            } else {
+                throw new Error(res.data.message)
             }
-            handleClose()
+            
         }).catch(err => {
             handleClose()
-
-            notify("Sorry, transaction could not be performed please try again later")
+            // notify("Sorry, transaction could not be performed please try again later")
+            toast.error(err.message, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                });
         })
     }
   
@@ -168,10 +204,11 @@ export default function ({open, setOpen, providerName}) {
                                 helperText="Please select buying currency"
                                 onChange={(e) => handleChange(e)}
                                 sx={{width: "80%", marginLeft: "auto", marginRight: "auto"}}
+                                required
                             >
-                            {currencies.map((option) => (
+                            {buyingCurrencies.map((option) => (
                                 <MenuItem key={option.value} value={option.value} >
-                                {option.label}
+                                    {option.label}
                                 </MenuItem>
                             ))}
                             </TextField>
@@ -186,8 +223,9 @@ export default function ({open, setOpen, providerName}) {
                                 helperText="Please select selling currency"
                                 onChange={handleChange}
                                 sx={{width: "80%", marginLeft: "auto", marginRight: "100%"}}
+                                required
                             >
-                            {currencies.map((option) => (
+                            {sellingCurrencies.map((option) => (
                                 <MenuItem key={option.value} value={option.value} >
                                 {option.label}
                                 </MenuItem>
@@ -204,28 +242,29 @@ export default function ({open, setOpen, providerName}) {
                                 onChange={handleChange}
                                 helperText="Please select your bank"
                                 sx={{width: "80%", marginLeft: "auto", marginRight: "100%"}}
+                                required
                             >
                             {["Fidelity", "Zenith", "Calbank", "Access Bank"].map((option) => (
                                 <MenuItem key={option} value={option} >
-                                {option}
+                                    {option}
                                 </MenuItem>
                             ))}
                             </TextField>
                         </div>
                         <div className='form-control' style={{width: "100%"}}>
-                            <TextField name="accountNumber" id="outlined-basic" label="Enter Account Number" variant="outlined" onChange={handleChange} sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
+                            <TextField required name="accountNumber" id="outlined-basic" label="Enter Account Number" variant="outlined" onChange={handleChange} sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
                         </div>
                         <div className='form-control' style={{width: "100%"}}>
-                            <TextField name="amount" id="outlined-basic" label="Enter Amount" variant="outlined" onChange={handleChange} sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
+                            <TextField required name="amount" id="outlined-basic" label="Enter Amount($) to buy" variant="outlined" onChange={handleChange} sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
                         </div>
                         <div className='form-control' style={{width: "100%"}}>
-                            <TextField name="accountName" id="outlined-basic" label="Enter Account Name" variant="outlined" onChange={handleChange}  sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
+                            <TextField required name="accountName" id="outlined-basic" label="Enter Account Name" variant="outlined" onChange={handleChange}  sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
                         </div>
                         <div className='form-control' style={{width: "100%"}}>
-                            <TextField name="branchName" id="outlined-basic" label="Enter Branch Name" variant="outlined" onChange={handleChange} sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
+                            <TextField required name="branchName" id="outlined-basic" label="Enter Branch Name" variant="outlined" onChange={handleChange} sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
                         </div>
                         <div className='form-control' style={{width: "100%"}}>
-                            <TextField name="contact" id="outlined-basic" label="Enter Your Contact" variant="outlined" onChange={handleChange}  sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
+                            <TextField required name="contact" id="outlined-basic" label="Enter Your Contact" variant="outlined" onChange={handleChange}  sx={{width: "95%", marginLeft: "auto", marginRight: "100%"}}/>
                         </div>
                         <div className='form-control' style={{width: "100%"}}>
                             <Button type="submit" variant='contained' sx={{width: "96%", margin: "auto"}} disableElevation>Submit</Button>

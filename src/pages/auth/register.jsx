@@ -1,5 +1,5 @@
 import { Box, Container, Grid, TextField, Typography, Button, Divider, Chip } from '@mui/material'
-import React, { useReducer} from 'react'
+import React, { useReducer, useState} from 'react'
 import RegistrationPageImage from "../../images/pexels-pixabay-259249.jpg"
 import "./auth.css"
 import { isInputEmpty, validateEmail } from '../../utils/validators'
@@ -8,8 +8,11 @@ import SocialLogins from '../../components/SocialLogins'
 import FormDivider from '../../components/FormDivider'
 import axios from "axios"
 import { useNavigate } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function RegistrationPage() {
+    const notify = (msg) => toast(msg);
+    const [loader, setLoader] = useState(false)
     const navigator = useNavigate()
     const initialRegistrationInfo = {
         firstName: "",
@@ -98,6 +101,7 @@ export default function RegistrationPage() {
     function handleSubmit(e){
         e.preventDefault()
         dispatch({type: "validateRegistrationInfo"})
+        setLoader(true)
     }
 
     function submitRegistrationInfo(userRegistrationInfo){
@@ -107,7 +111,19 @@ export default function RegistrationPage() {
             userRegistrationInfo.errorBagAndMessages.emailError ||
             userRegistrationInfo.errorBagAndMessages.passwordError 
             ){
-                console.log("Error");
+                console.log("Invalid fields entered");
+                // notify("Please enter all required fields")
+                toast.error('Please enter all required fields', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    });
+                setLoader(false)
                 return;
         } 
 
@@ -117,10 +133,43 @@ export default function RegistrationPage() {
         axios.post("http://www.localhost:8080/api/v1/register", {firstName, lastName, email, password})
         .then(res => {
             console.log(res.data)
-            navigator("/login")
+            if (res.data === "User already exists"){
+                throw new Error("User already exists")
+            }
+            setLoader(true)
+            toast.success("Account created successfully", {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                });
+            setTimeout(() => {
+                navigator("/login")
+            }, 2000)
+
+            if (res.status >= 400 ){    
+                throw new Error("Sorry, an error occured, please try again")
+            }
         })
-        .then(err => console.log(err))
-        console.log("Submitting User info")
+        .catch(err => {
+            console.log(err)
+            setLoader(false)
+            toast.error(err.message, {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                });
+            // notify("Unable to create an account. Please try again later")
+        })
     }
 
     function reducer(state, action) {
@@ -148,6 +197,7 @@ export default function RegistrationPage() {
     
   return (
     <Box className='registration-page'>
+         <ToastContainer />
         <Grid container sx={{height: "100vh"}}>
             <Grid item xs={12} sm={8} md={7} sx={{backgroundColor: "teal", height: "100%"}}>
                 <Box className="registration-page-img-container">
@@ -164,7 +214,7 @@ export default function RegistrationPage() {
             <Grid item xs={12} sm={4} md={5} sx={{backgroundColor: "#fff", height: "100%"}}>
                <Box className="registration-form-container">
                     <Container sx={{padding: "20px"}}>
-                        <RegistrationForm handleChange={handleChange} handleSubmit={handleSubmit} registrationState={registrationState}/>
+                        <RegistrationForm handleChange={handleChange} handleSubmit={handleSubmit} registrationState={registrationState} loader={loader}/>
                         <FormDivider />
                         <SocialLogins />
                     </Container>

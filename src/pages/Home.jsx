@@ -6,9 +6,17 @@ import Container from '@mui/material/Container';
 import "./home.css"
 import { Typography } from '@mui/material';
 import Button from '@mui/material/Button';
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import SupportedBanks from '../components/SupportedBanks';
+import Footer from '../components/Footer';
+import { loadUserDataFromStorage } from '../utils/cacheUtils';
 
+export function loader(){
+    let userToken = loadUserDataFromStorage().token;
+    console.log("Loader ",userToken)
+    if (userToken) return null
+    return redirect("/login")
+}
 
 export default function Home() {
     const navigate = useNavigate();
@@ -41,7 +49,7 @@ export default function Home() {
                                 better-than-market
                                 conditions
                             </Typography>
-                            <Typography variant='p' color="white" sx={{marginTop: "40px", marginBottom: "40px", lineHeight: "20px", display: "inline-block"}}>
+                            <Typography variant='h6' color="white" sx={{marginTop: "40px", marginBottom: "40px", lineHeight: "25px",letterSpacing: "2px", display: "inline-block"}}>
                                 Kick start your trading journey with us and explore the world of trading with limitless possibilities
                             </Typography>
                             <Button variant="contained" disableElevation sx={{padding: "16px"}} onClick={() => navigate("/providers")}>
@@ -70,6 +78,7 @@ export default function Home() {
                     <SupportedBanks />
                 </Box>
             </Box>
+            <Footer />
         </>
     )
 }

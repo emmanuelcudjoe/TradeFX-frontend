@@ -7,17 +7,23 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Box, Container, Typography } from '@mui/material';
+import { Box, CircularProgress, Container, Typography } from '@mui/material';
 import axios from 'axios';
 import { loadUserDataFromStorage } from '../utils/cacheUtils';
+import { parseJwt } from '../utils/authUtils';
 
 export default function UserFX() {
   const [showButton, setShowButton] = useState(false);
   const [showProvidersButton, setShowProvidersButton] = useState(true);
   const [transactions, setTransactions] = useState([])
+  const [loader, setLoader] = useState(true)
 
   useEffect(() => {
-    axios.get("http://www.localhost:8080/api/v1/get-all-transactions", {
+    setLoader(true)
+    const token = loadUserDataFromStorage().token;
+    const userId = parseJwt(token).sub.split(",")[0]
+    console.log(userId)
+    axios.get(`http://www.localhost:8080/api/v1/get-user-transactions/${userId}`, {
       headers: {
         "Authorization": `bearer ${loadUserDataFromStorage().token}`
       }
@@ -25,24 +31,14 @@ export default function UserFX() {
       .then(res => {
         console.log(res.data)
         setTransactions(res.data)
+        setLoader(false)
       })
       .catch(err => {
-        console.log(data)
+        console.log(err)
+        setLoader(false)
+
       })
   }, [])
-  
-
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
-
-  const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-  ];
 
   useEffect(() => {
     setShowButton(false)
@@ -55,13 +51,14 @@ export default function UserFX() {
             <Container>
                 <Typography variant='h5' sx={{marginBottom: "20px"}}>Recent Transactions</Typography>
                 <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <Table sx={{ minWidth: 950 }} aria-label="simple table">
                         <TableHead>
                         <TableRow>
                             <TableCell>Transaction Id</TableCell>
                             <TableCell align="center">Provider</TableCell>
-                            <TableCell align="center">Buying</TableCell>
-                            <TableCell align="center">Selling</TableCell>
+                            <TableCell align="center">Buying Currency</TableCell>
+                            <TableCell align="center">Selling Currency</TableCell>
+                            <TableCell align="center">Requested Amount</TableCell>
                             <TableCell align="center">Current Rate</TableCell>
                             <TableCell align="center">Receipient Bank</TableCell>
                             <TableCell align="center">Transaction Status</TableCell>
@@ -69,7 +66,7 @@ export default function UserFX() {
                         </TableRow>
                         </TableHead>
                         <TableBody>
-                        {transactions.map((transaction) => (
+                        {!!transactions.length && transactions.map((transaction) => (
                             <TableRow
                             key={transaction.transactionId}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -78,8 +75,9 @@ export default function UserFX() {
                                 {transaction.transactionId}
                             </TableCell>
                             <TableCell align="center">{transaction.provider}</TableCell>
-                            <TableCell align="center">{""}</TableCell>
-                            <TableCell align="center">{""}</TableCell>
+                            <TableCell align="center">{"USD($)"}</TableCell>
+                            <TableCell align="center">{"GHS(₵)"}</TableCell>
+                            <TableCell align="center">{transaction.requestedAmount}</TableCell>
                             <TableCell align="center">10.3</TableCell>
                             <TableCell align="center">{transaction.bankName}</TableCell>
                             <TableCell align="center"><em>{transaction.transactionStatus}</em></TableCell>
@@ -89,6 +87,28 @@ export default function UserFX() {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                {!loader && !transactions.length && (
+                  <>
+                    <Box sx={{marginTop: "10px"}}>
+                      <Paper elevation={0}>
+                        <Container sx={{paddingTop: "20px", textAlign: "center"}}>
+                          <Typography variant='h3' sx={{color: "rgba(0,0,0,.4)"}}>No data to display</Typography>
+                        </Container>
+                      </Paper>
+                    </Box>
+                  </>
+                )}
+                {loader && (
+                  <>
+                    <Box sx={{marginTop: "10px"}}>
+                      <Paper elevation={0}>
+                        <Container sx={{paddingTop: "20px", textAlign: "center"}}>
+                          <CircularProgress size={60} thickness={4}/>
+                        </Container>
+                      </Paper>
+                    </Box>
+                  </>
+                )}
             </Container>
         </Box>
     </>
